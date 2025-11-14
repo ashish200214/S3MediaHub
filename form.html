@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Upload to S3</title>
+
+  <style>
+    /* ==== GLOBAL STYLE ==== */
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f4f7fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* ==== FORM CARD ==== */
+    .container {
+      background: #ffffff;
+      width: 95%;
+      max-width: 550px;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.6s ease;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 0 0 20px;
+      font-size: 26px;
+      color: #2d3748;
+    }
+
+    label {
+      font-weight: 600;
+      color: #4a5568;
+      margin-top: 10px;
+      display: block;
+    }
+
+    /* ==== INPUT STYLE ==== */
+    input[type="file"] {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px;
+      border: 2px dashed #cbd5e0;
+      border-radius: 12px;
+      background: #f9fafb;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    input[type="file"]:hover {
+      border-color: #3182ce;
+      background: #f1f5f9;
+    }
+
+    /* ==== SUBMIT BUTTON ==== */
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #3182ce;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.25s;
+      font-weight: 600;
+    }
+    button:hover {
+      background: #2b6cb0;
+      transform: translateY(-1px);
+    }
+
+    /* ==== PREVIEW AREA ==== */
+    .preview {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .preview img,
+    .preview video {
+      width: 100%;
+      max-width: 350px;
+      border-radius: 12px;
+      margin-top: 10px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+    }
+
+    /* ==== LOG / STATUS BOX ==== */
+    .log {
+      margin-top: 25px;
+      white-space: pre-wrap;
+      background: #edf2f7;
+      padding: 12px;
+      border-radius: 10px;
+      border-left: 5px solid #3182ce;
+      color: #2d3748;
+      font-size: 14px;
+    }
+
+    /* ==== ANIMATIONS ==== */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Upload Image or Video</h1>
+
+    <form id="uploadForm" action="upload.php" method="post" enctype="multipart/form-data">
+      <label>Select file:</label>
+      <input id="fileInput" name="file" type="file" accept="image/*,video/*" required />
+
+      <button type="submit">Upload to S3</button>
+    </form>
+
+    <div class="preview" id="preview"></div>
+    <div class="log" id="log" aria-live="polite"></div>
+  </div>
+
+<script>
+const fileInput = document.getElementById('fileInput');
+const preview = document.getElementById('preview');
+const log = document.getElementById('log');
+
+fileInput.addEventListener('change', () => {
+  preview.innerHTML = '';
+  const file = fileInput.files[0];
+  if (!file) return;
+  const type = file.type;
+
+  if (type.startsWith('image/')) {
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    preview.appendChild(img);
+  } else if (type.startsWith('video/')) {
+    const video = document.createElement('video');
+    video.src = URL.createObjectURL(file);
+    video.controls = true;
+    preview.appendChild(video);
+  }
+});
+</script>
+
+</body>
+</html>
